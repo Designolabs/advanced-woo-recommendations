@@ -90,3 +90,87 @@
 .slick-dots li button:before {
     color: #0071a1;  /* Change dots color */
 }
+
+.awr-loading-spinner {
+    text-align: center;
+    padding: 2rem;
+}
+
+.awr-loading-spinner .spinner {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-top-color: #0073aa;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.awr-error-message {
+    text-align: center;
+    color: #d63638;
+    padding: 1rem;
+    background: #fef8f8;
+    border: 1px solid #d63638;
+    border-radius: 4px;
+    margin: 1rem 0;
+}
+
+.awr-recommendations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
+    padding: 1rem;
+}
+
+.awr-product {
+    border: 1px solid #eee;
+    border-radius: 4px;
+    overflow: hidden;
+    transition: transform 0.2s ease;
+}
+
+.awr-product:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.awr-product-image {
+    position: relative;
+    padding-top: 100%;
+}
+
+.awr-product-image img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.awr-product-details {
+    padding: 1rem;
+}
+
+.awr-product-details h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.awr-price {
+    color: #e03;
+    font-weight: bold;
+    margin: 0;
+}
+
+.awr-no-recommendations {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+}
