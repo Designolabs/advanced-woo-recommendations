@@ -18,7 +18,7 @@
 ## Installation
 
 ### 1. Download the Plugin
-You can download the plugin either from [GitHub](https://github.com/yourusername/yourplugin) or directly from the **WordPress Plugin Repository**.
+You can download the plugin either from [GitHub](https://github.com/rizennews/advanced-woo-recommendations) or directly from the **WordPress Plugin Repository**.
 
 ### 2. Install the Plugin
 
