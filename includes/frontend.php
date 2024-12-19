@@ -5,18 +5,28 @@ add_action('woocommerce_after_checkout_form', 'awr_display_cart_recommendations'
 
 // Function to display cart-based recommendations
 function awr_display_cart_recommendations() {
-    // Get current user/cart session ID
+    // Add nonce verification for security
+    wp_nonce_field('awr_recommendations', 'awr_recommendations_nonce');
+    
+    // Sanitize user ID
     $user_id = get_current_user_id();
     if (!$user_id) {
-        $user_id = 'guest_' . session_id();
+        $user_id = sanitize_key('guest_' . session_id());
     }
 
-    // Fetch cart items
-    $cart_items = WC()->cart->get_cart();
-    if (!$cart_items) return;
+    // Early return if cart is empty
+    if (empty(WC()->cart->get_cart())) {
+        return;
+    }
 
-    // Fetch recommendations from Recombee based on cart items
-    $recommendations = awr_get_recommendations($user_id, 6); // Limit to 6 recommendations
+    // Cache recommendations for 1 hour
+    $cache_key = 'awr_recommendations_' . $user_id;
+    $recommendations = get_transient($cache_key);
+    
+    if (false === $recommendations) {
+        $recommendations = awr_get_recommendations($user_id, 6);
+        set_transient($cache_key, $recommendations, HOUR_IN_SECONDS);
+    }
 
     if (!empty($recommendations)) : ?>
         <div class="awr-cart-recommendations">
@@ -142,15 +152,28 @@ add_action('wp_head', 'awr_dynamic_color_styles');
 
 
 function awr_product_recommendations_shortcode($atts) {
-    // Get the layout style from plugin settings
-    $layout_style = get_option('awr_layout_style', 'grid');  // Default to 'grid'
+    // Sanitize and validate attributes
+    $atts = shortcode_atts(
+        array(
+            'per_page' => 12,
+            'orderby' => 'date',
+            'order' => 'DESC',
+        ),
+        $atts,
+        'product_recommendations'
+    );
 
-    // Set up the arguments for the shortcode (this can be customized further)
+    // Sanitize inputs
+    $per_page = absint($atts['per_page']);
+    $orderby = sanitize_key($atts['orderby']);
+    $order = in_array(strtoupper($atts['order']), ['ASC', 'DESC']) ? strtoupper($atts['order']) : 'DESC';
+
     $args = array(
         'post_type'      => 'product',
-        'posts_per_page' => 12,  // Default number of products per page
-        'orderby'        => 'date',
-        'order'          => 'DESC',
+        'posts_per_page' => $per_page,
+        'orderby'        => $orderby,
+        'order'          => $order,
+        'post_status'    => 'publish',
     );
 
     // Query to get products for recommendations
@@ -199,16 +222,12 @@ function awr_product_recommendations_shortcode($atts) {
 }
 add_shortcode('product_recommendations', 'awr_product_recommendations_shortcode');
 
-$atts = shortcode_atts(
-    array(
-        'per_page' => 12, // Default number of products
-    ),
-    $atts
-);
-
-$args = array(
-    'post_type'      => 'product',
-    'posts_per_page' => $atts['per_page'],
-    'orderby'        => 'date',
-    'order'          => 'DESC',
-);
+// Move duplicate code outside the shortcode function
+function awr_get_dynamic_styles() {
+    wp_enqueue_style('awr-recommendations-style');
+    wp_add_inline_style('awr-recommendations-style', 
+        awr_dynamic_layout_styles() . 
+        awr_dynamic_color_styles()
+    );
+}
+add_action('wp_enqueue_scripts', 'awr_get_dynamic_styles');
