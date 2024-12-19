@@ -4,6 +4,9 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
+add_settings_field('awr_option', __('Enable Recommendations', 'advanced-woo-recommendations'), 'awr_option_callback');
+
+
 // Check WooCommerce dependency
 function awr_check_woocommerce() {
     if (!class_exists('WooCommerce')) {

@@ -10,6 +10,7 @@ namespace AdvancedWooRecommendations;
  * Author URI: https://designolabs.com
  * License: GPL-2.0+
  * Text Domain: advanced-woo-recommendations
+ * Domain Path: /languages
  * Requires PHP: 7.4
  * Requires at least: 5.6
  * WC requires at least: 5.0
@@ -20,6 +21,35 @@ namespace AdvancedWooRecommendations;
 if (!defined('ABSPATH')) {
     exit;
 }
+
+add_action('plugins_loaded', 'awr_load_textdomain');
+function awr_load_textdomain() {
+    load_plugin_textdomain('advanced-woo-recommendations', false, dirname(plugin_basename(__FILE__)) . '/languages/');
+}
+
+add_shortcode('product_recommendations', 'awr_product_recommendations_shortcode');
+function awr_product_recommendations_shortcode($atts) {
+    // Check the current language
+    if (function_exists('pll_current_language')) {
+        $current_language = pll_current_language();
+        
+        // Use the language-specific logic if needed
+        if ($current_language == 'es') {
+            return __('Productos Recomendados', 'advanced-woo-recommendations');
+        } else {
+            return __('Recommended Products', 'advanced-woo-recommendations');
+        }
+    }
+}
+
+$recommended_text = sprintf(__('You may like these products, %s', 'advanced-woo-recommendations'), $user_name);
+echo $recommended_text;
+
+function awr_product_recommendations_shortcode($atts) {
+    return __('Recommended Products', 'advanced-woo-recommendations');
+}
+add_shortcode('product_recommendations', 'awr_product_recommendations_shortcode');
+
 
 // Import WordPress globals
 use function wp_enqueue_style as wp_enqueue_style;

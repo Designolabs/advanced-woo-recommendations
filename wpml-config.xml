@@ -1,0 +1,8 @@
+<wpml-config>
+    <custom-fields>
+        <custom-field action="translate">awr_custom_field</custom-field>
+    </custom-fields>
+    <admin-texts>
+        <key name="awr_custom_option">awr_custom_option</key>
+    </admin-texts>
+</wpml-config>
