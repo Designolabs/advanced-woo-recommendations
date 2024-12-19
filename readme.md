@@ -88,7 +88,7 @@ If you’d like to support the development of this plugin, you can sponsor the p
 - **GitHub Sponsors**: [GitHub Sponsors](https://github.com/sponsors/yourusername)
 - **Patreon**: [padmoreaning](https://www.patreon.com/padmoreaning)
 - **Ko-fi**: [padmoreaning](https://ko-fi.com/padmoreaning)
-- **Open Collective**: [https://opencollective.com/padmore-aning](#)
+- **Open Collective**: [padmore-aning](https://opencollective.com/padmore-aning)
 
 ## License
 
