@@ -78,8 +78,8 @@ I welcome contributions to the **Advanced WooCommerce Recommendations Plugin**! 
 
 If you need support, please visit our [Support Page](#) or reach out via the following methods:
 
-- **Email**: [support@yourdomain.com](mailto:support@yourdomain.com)
-- **GitHub Issues**: [Report issues here](https://github.com/yourusername/yourplugin/issues)
+- **Email**: [support@yourdomain.com](mailto:support@designolabs.com)
+- **GitHub Issues**: [Report issues here](https://github.com/rizennews/advanced-woo-recommendations/issues)
 
 ## Sponsorship
 
@@ -88,7 +88,7 @@ If you’d like to support the development of this plugin, you can sponsor the p
 - **GitHub Sponsors**: [GitHub Sponsors](https://github.com/sponsors/yourusername)
 - **Patreon**: [padmoreaning](https://www.patreon.com/padmoreaning)
 - **Ko-fi**: [padmoreaning](https://ko-fi.com/padmoreaning)
-- **Open Collective**: [https://opencollective.com/padmore-aning](#)
+- **Open Collective**: [padmore-aning](https://opencollective.com/padmore-aning)
 
 ## License
 
