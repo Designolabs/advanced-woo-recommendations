@@ -57,7 +57,7 @@ function awr_create_settings_page() {
         80
     );
 }
-add_action('admin_menu', 'awr_create_settings_page');
+add_action('admin_menu', __NAMESPACE__ . '\\awr_create_settings_page');
 
 // Render settings page
 function awr_render_settings_page() {
