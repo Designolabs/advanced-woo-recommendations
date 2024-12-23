@@ -407,5 +407,3 @@ function awr_validate_api_key($api_key)
         return '';
     }
 
-    <span class="math-inline">pattern \= '/^\[a\-zA\-Z0\-9\\\-\\\_\]\{32,64\}</span>/';
-    if (!preg_match($
