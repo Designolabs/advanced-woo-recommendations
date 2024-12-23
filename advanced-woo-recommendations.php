@@ -407,3 +407,30 @@ function awr_validate_api_key($api_key)
         return '';
     }
 
+    // Basic format validation
+    if (!preg_match('/^[a-zA-Z0-9\-\_]{20,}$/', $api_key)) {
+        add_settings_error(
+            'awr_recombee_api_key',
+            'awr_api_key_error', 
+            __('Invalid API key format. Please enter a valid Recombee API key.', 'advanced-woo-recommendations'),
+            'error'
+        );
+        return '';
+    }
+
+    // Test API connection
+    $test_result = awr_test_api_connection($api_key);
+    if (is_wp_error($test_result)) {
+        add_settings_error(
+            'awr_recombee_api_key',
+            'awr_api_key_error',
+            sprintf(
+                __('Failed to connect to Recombee API: %s', 'advanced-woo-recommendations'),
+                $test_result->get_error_message()
+            ),
+            'error'
+        );
+        return '';
+    }
+
+    return sanitize_text_field($api_key);
