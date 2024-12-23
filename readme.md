@@ -78,8 +78,8 @@ I welcome contributions to the **Advanced WooCommerce Recommendations Plugin**! 
 
 If you need support, please visit our [Support Page](#) or reach out via the following methods:
 
-- **Email**: [support@yourdomain.com](mailto:support@yourdomain.com)
-- **GitHub Issues**: [Report issues here](https://github.com/yourusername/yourplugin/issues)
+- **Email**: [support@yourdomain.com](mailto:support@designolabs.com)
+- **GitHub Issues**: [Report issues here](https://github.com/rizennews/advanced-woo-recommendations/issues)
 
 ## Sponsorship
 
