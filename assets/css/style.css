@@ -7,19 +7,22 @@
 
 .awr-product {
     border: 1px solid #ccc;
-    padding: 10px;
+    padding: 15px; /* Increased padding for better spacing */
     text-align: center;
     background-color: #fff;
     transition: all 0.3s ease;
+    border-radius: 8px; /* Added border-radius for a softer look */
 }
 
 .awr-product:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+    transform: translateY(-2px); /* Slight lift on hover */
 }
 
 .awr-product img {
     max-width: 100%;
     height: auto;
+    border-radius: 4px; /* Rounded corners for images */
 }
 
 .awr-price {
@@ -32,6 +35,7 @@
     --awr-primary-color: #0071a1;
     --awr-secondary-color: #f1f1f1;
     --awr-font-family: Arial, sans-serif;
+    --awr-text-color: #333; /* Default text color */
 }
 
 .awr-recommendations-grid {
@@ -40,20 +44,22 @@
 
 .awr-product {
     background-color: var(--awr-secondary-color);
+    color: var(--awr-text-color); /* Apply default text color */
 }
 
 .awr-product a {
     color: var(--awr-primary-color);
+    text-decoration: none; /* Remove underline from links */
+}
+
+.awr-product a:hover {
+    text-decoration: underline; /* Add underline on hover for links */
 }
 
 .awr-price {
     color: var(--awr-primary-color);
 }
 
-
-:root {
-    --awr-font-family: Arial, sans-serif; /* Default font */
-}
 
 /* Apply the selected font to the recommendations grid */
 .awr-recommendations-grid {
@@ -64,29 +70,59 @@
 /* Grid Layout */
 .awr-recommendations-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* Default: 4 columns */
-    gap: 20px; /* Default: 20px spacing */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Adjusted for responsiveness */
+    gap: 25px; /* Increased gap for better spacing */
 }
 
 /* Carousel Layout */
 .awr-recommendations-carousel .slick-slide {
-    margin: 0 10px; /* Add spacing between carousel slides */
+    margin: 0 10px;
 }
 
 .slick-prev, .slick-next {
-    background-color: #0071a1;
+    background-color: var(--awr-primary-color);
     color: white;
     border-radius: 50%;
     padding: 10px;
+    border: none; /* Remove default border */
+    cursor: pointer; /* Indicate clickable */
+    transition: background-color 0.3s ease; /* Smooth transition */
 }
 
-.slick-prev, .slick-next {
-    background-color: #0071a1;
-    color: white;
+.slick-prev:hover, .slick-next:hover {
+    background-color: darken(var(--awr-primary-color), 10%); /* Darken on hover */
+}
+
+.slick-dots {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.slick-dots li {
+    display: inline-block;
+    margin: 0 5px;
+}
+
+.slick-dots li button {
+    font-size: 0;
+    line-height: 0;
+    display: block;
+    width: 10px;
+    height: 10px;
+    padding: 5px;
+    cursor: pointer;
+    color: transparent;
+    border: 0;
+    outline: none;
+    background: #ccc;
     border-radius: 50%;
-    padding: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.slick-dots li.slick-active button {
+    background-color: var(--awr-primary-color);
 }
 
 .slick-dots li button:before {
-    color: #0071a1;  /* Change dots color */
+    display: none; /* Hide default dots */
 }

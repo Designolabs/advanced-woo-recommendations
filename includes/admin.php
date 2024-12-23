@@ -2,12 +2,12 @@
 // Create settings page
 function awr_create_settings_page() {
     add_menu_page(
-        'Advanced Woo Recommendations', 
-        'Woo Recommendations', 
-        'manage_options', 
-        'awr-settings', 
-        'awr_render_settings_page', 
-        'dashicons-admin-generic', 
+        'Advanced Woo Recommendations',
+        'Woo Recommendations',
+        'manage_options',
+        'awr-settings',
+        'awr_render_settings_page',
+        'dashicons-admin-generic',
         80
     );
 }
@@ -31,21 +31,124 @@ function awr_render_settings_page() {
 
 // Register settings
 function awr_register_settings() {
+    // API Settings
     register_setting('awr-settings-group', 'awr_recombee_api_key');
-
     add_settings_section(
-        'awr_main_settings', 
-        'API Settings', 
-        'awr_main_settings_callback', 
+        'awr_main_settings',
+        'API Settings',
+        'awr_main_settings_callback',
         'awr-settings'
     );
-
     add_settings_field(
-        'awr_recombee_api_key', 
-        'Recombee API Key', 
-        'awr_api_key_callback', 
-        'awr-settings', 
+        'awr_recombee_api_key',
+        'Recombee API Key',
+        'awr_api_key_callback',
+        'awr-settings',
         'awr_main_settings'
+    );
+
+    // Appearance Customization
+    register_setting('awr-settings-group', 'awr_primary_color');
+    register_setting('awr-settings-group', 'awr_secondary_color');
+    register_setting('awr-settings-group', 'awr_font_family');
+    add_settings_section(
+        'awr_customization_section',
+        __('Recommendations Customization', 'advanced-woo-recommendations'),
+        'awr_customization_section_callback',
+        'awr-settings'
+    );
+    add_settings_field(
+        'awr_primary_color',
+        __('Primary Color', 'advanced-woo-recommendations'),
+        'awr_primary_color_callback',
+        'awr-settings',
+        'awr_customization_section'
+    );
+    add_settings_field(
+        'awr_secondary_color',
+        __('Secondary Color', 'advanced-woo-recommendations'),
+        'awr_secondary_color_callback',
+        'awr-settings',
+        'awr_customization_section'
+    );
+    add_settings_field(
+        'awr_font_family',
+        __('Font Family', 'advanced-woo-recommendations'),
+        'awr_font_family_callback',
+        'awr-settings',
+        'awr_customization_section'
+    );
+
+    // Layout Settings
+    register_setting('awr-settings-group', 'awr_layout_style');
+    register_setting('awr-settings-group', 'awr_product_columns');
+    register_setting('awr-settings-group', 'awr_product_spacing');
+    add_settings_section(
+        'awr_layout_section',
+        __('Recommendations Layout', 'advanced-woo-recommendations'),
+        'awr_layout_section_callback',
+        'awr-settings'
+    );
+    add_settings_field(
+        'awr_layout_style',
+        __('Layout Style', 'advanced-woo-recommendations'),
+        'awr_layout_style_callback',
+        'awr-settings',
+        'awr_layout_section'
+    );
+    add_settings_field(
+        'awr_product_columns',
+        __('Number of Columns', 'advanced-woo-recommendations'),
+        'awr_product_columns_callback',
+        'awr-settings',
+        'awr_layout_section'
+    );
+    add_settings_field(
+        'awr_product_spacing',
+        __('Product Spacing (px)', 'advanced-woo-recommendations'),
+        'awr_product_spacing_callback',
+        'awr-settings',
+        'awr_layout_section'
+    );
+
+    // Color Settings
+    register_setting('awr-settings-group', 'awr_bg_color');
+    register_setting('awr-settings-group', 'awr_text_color');
+    register_setting('awr-settings-group', 'awr_button_color');
+    register_setting('awr-settings-group', 'awr_button_hover_color');
+    add_settings_section(
+        'awr_color_section',
+        __('Recommendations Colors', 'advanced-woo-recommendations'),
+        'awr_color_section_callback',
+        'awr-settings'
+    );
+    add_settings_field(
+        'awr_bg_color',
+        __('Background Color', 'advanced-woo-recommendations'),
+        'awr_bg_color_callback',
+        'awr-settings',
+        'awr_color_section'
+    );
+    add_settings_field(
+        'awr_text_color',
+        __('Text Color', 'advanced-woo-recommendations'),
+        'awr_text_color_callback',
+        'awr-settings',
+        'awr_color_section'
+    );
+    add_settings_field(
+        'awr_button_color',
+        __('Button Color', 'advanced-woo-recommendations'),
+        'awr_button_color_callback',
+        'awr-settings',
+        'awr_color_section'
+    );
+    add_settings_field(
+        'awr_button_hover_color',
+        __('Button Hover Color', 'advanced-woo-recommendations'),
+        'awr_button_hover_color_callback',
+        'awr-settings',
+        'awr_color_section'
     );
 }
 add_action('admin_init', 'awr_register_settings');
@@ -61,46 +164,6 @@ function awr_api_key_callback() {
     echo '<input type="text" name="awr_recombee_api_key" value="' . esc_attr($api_key) . '" />';
 }
 
-function awr_register_settings() {
-    // Register a new setting for color and font customization
-    register_setting('awr_settings_group', 'awr_primary_color');
-    register_setting('awr_settings_group', 'awr_secondary_color');
-    register_setting('awr_settings_group', 'awr_font_family');
-
-    // Add a section in the admin dashboard for appearance customization
-    add_settings_section(
-        'awr_customization_section',
-        __('Recommendations Customization', 'advanced-woo-recommendations'),
-        'awr_customization_section_callback',
-        'awr-settings-page'
-    );
-
-    // Add fields for primary color, secondary color, and font family
-    add_settings_field(
-        'awr_primary_color',
-        __('Primary Color', 'advanced-woo-recommendations'),
-        'awr_primary_color_callback',
-        'awr-settings-page',
-        'awr_customization_section'
-    );
-
-    add_settings_field(
-        'awr_secondary_color',
-        __('Secondary Color', 'advanced-woo-recommendations'),
-        'awr_secondary_color_callback',
-        'awr-settings-page',
-        'awr_customization_section'
-    );
-
-    add_settings_field(
-        'awr_font_family',
-        __('Font Family', 'advanced-woo-recommendations'),
-        'awr_font_family_callback',
-        'awr-settings-page',
-        'awr_customization_section'
-    );
-}
-add_action('admin_init', 'awr_register_settings');
 
 // Callback functions for settings
 function awr_customization_section_callback() {
@@ -116,13 +179,6 @@ function awr_secondary_color_callback() {
     $secondary_color = get_option('awr_secondary_color', '#f1f1f1');
     echo '<input type="text" name="awr_secondary_color" value="' . esc_attr($secondary_color) . '" class="awr-color-picker" />';
 }
-
-function awr_font_family_callback() {
-    $font_family = get_option('awr_font_family', 'Arial, sans-serif');
-    echo '<input type="text" name="awr_font_family" value="' . esc_attr($font_family) . '" class="awr-font-picker" />';
-}
-
-
 
 function awr_font_family_callback() {
     $selected_font = get_option('awr_font_family', 'Arial, sans-serif');
@@ -147,47 +203,6 @@ function awr_font_family_callback() {
     echo '<p id="awr-font-preview" style="font-family:' . esc_attr($selected_font) . ';">This is a live preview of the selected font.</p>';
 }
 
-
-function awr_register_layout_settings() {
-    // Register layout and spacing settings
-    register_setting('awr_settings_group', 'awr_layout_style');
-    register_setting('awr_settings_group', 'awr_product_columns');
-    register_setting('awr_settings_group', 'awr_product_spacing');
-
-    // Add a section for layout customization
-    add_settings_section(
-        'awr_layout_section',
-        __('Recommendations Layout', 'advanced-woo-recommendations'),
-        'awr_layout_section_callback',
-        'awr-settings-page'
-    );
-
-    // Add fields for layout style, product columns, and spacing
-    add_settings_field(
-        'awr_layout_style',
-        __('Layout Style', 'advanced-woo-recommendations'),
-        'awr_layout_style_callback',
-        'awr-settings-page',
-        'awr_layout_section'
-    );
-
-    add_settings_field(
-        'awr_product_columns',
-        __('Number of Columns', 'advanced-woo-recommendations'),
-        'awr_product_columns_callback',
-        'awr-settings-page',
-        'awr_layout_section'
-    );
-
-    add_settings_field(
-        'awr_product_spacing',
-        __('Product Spacing (px)', 'advanced-woo-recommendations'),
-        'awr_product_spacing_callback',
-        'awr-settings-page',
-        'awr_layout_section'
-    );
-}
-add_action('admin_init', 'awr_register_layout_settings');
 
 // Callback functions for the new fields
 function awr_layout_section_callback() {
@@ -215,56 +230,6 @@ function awr_product_spacing_callback() {
     echo '<input type="number" name="awr_product_spacing" value="' . esc_attr($spacing) . '" min="0" max="50" />';
 }
 
-
-function awr_register_color_settings() {
-    // Register color settings
-    register_setting('awr_settings_group', 'awr_bg_color');
-    register_setting('awr_settings_group', 'awr_text_color');
-    register_setting('awr_settings_group', 'awr_button_color');
-    register_setting('awr_settings_group', 'awr_button_hover_color');
-
-    // Add a section for color customization
-    add_settings_section(
-        'awr_color_section',
-        __('Recommendations Colors', 'advanced-woo-recommendations'),
-        'awr_color_section_callback',
-        'awr-settings-page'
-    );
-
-    // Add fields for background color, text color, and buttons
-    add_settings_field(
-        'awr_bg_color',
-        __('Background Color', 'advanced-woo-recommendations'),
-        'awr_bg_color_callback',
-        'awr-settings-page',
-        'awr_color_section'
-    );
-
-    add_settings_field(
-        'awr_text_color',
-        __('Text Color', 'advanced-woo-recommendations'),
-        'awr_text_color_callback',
-        'awr-settings-page',
-        'awr_color_section'
-    );
-
-    add_settings_field(
-        'awr_button_color',
-        __('Button Color', 'advanced-woo-recommendations'),
-        'awr_button_color_callback',
-        'awr-settings-page',
-        'awr_color_section'
-    );
-
-    add_settings_field(
-        'awr_button_hover_color',
-        __('Button Hover Color', 'advanced-woo-recommendations'),
-        'awr_button_hover_color_callback',
-        'awr-settings-page',
-        'awr_color_section'
-    );
-}
-add_action('admin_init', 'awr_register_color_settings');
 
 // Callback functions for the new color fields
 function awr_color_section_callback() {
