@@ -29,7 +29,7 @@ if (!defined('ABSPATH')) {
 // Check WooCommerce dependency
 function awr_check_woocommerce() {
     if (!class_exists('WooCommerce')) {
-        add_action('admin_notices', function() {
+        add_action('admin_notices', function () {
             ?>
             <div class="notice notice-error">
                 <p><?php _e('Advanced Woo Recommendations requires WooCommerce to be installed and active.', 'advanced-woo-recommendations'); ?></p>
@@ -46,13 +46,13 @@ function awr_create_settings_page() {
     if (!awr_check_woocommerce()) {
         return;
     }
-    
+
     add_menu_page(
         'Advanced Woo Recommendations',
         'Woo Recommendations',
         'manage_options',
         'awr-settings',
-        'awr_render_settings_page',
+        __NAMESPACE__ . '\\awr_render_settings_page', // Use namespace reference
         'dashicons-admin-generic',
         80
     );
@@ -71,7 +71,6 @@ function awr_render_settings_page() {
         <?php settings_errors(); ?>
         <form method="post" action="options.php">
             <?php
-            wp_nonce_field('awr_save_settings', 'awr_settings_nonce');
             settings_fields('awr_settings_group');
             do_settings_sections('awr-settings-page');
             submit_button();
