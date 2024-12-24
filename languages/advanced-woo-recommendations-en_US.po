@@ -4,8 +4,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-12-19 12:00+0000\n"
 "PO-Revision-Date: 2024-12-19 12:00+0000\n"
-"Last-Translator: \n"
-"Language-Team: \n"
+"Last-Translator: Designolabs Studio <info@designolabs.com>\n"
+"Language-Team: Designolabs Studio <info@designolabs.com>\n"
 "Language: en_US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -39,3 +39,63 @@ msgstr "Product Recommendations"
 #: templates/recommendations.php:40
 msgid "Add to Cart"
 msgstr "Add to Cart"
+
+#: admin/dashboard.php:10
+msgid "Advanced Woo Recommendations Dashboard"
+msgstr "Advanced Woo Recommendations Dashboard"
+
+#: admin/dashboard.php:13
+msgid "Statistics"
+msgstr "Statistics"
+
+#: admin/dashboard.php:14
+msgid "Total recommendations delivered:"
+msgstr "Total recommendations delivered:"
+
+#: admin/dashboard.php:15
+msgid "Total sales generated from recommendations:"
+msgstr "Total sales generated from recommendations:"
+
+#: admin/dashboard.php:18
+msgid "Recent Recommendations"
+msgstr "Recent Recommendations"
+
+#: admin/dashboard.php:19
+msgid "Here you can see the most recent recommendations delivered to users."
+msgstr "Here you can see the most recent recommendations delivered to users."
+
+#: admin/dashboard.php:23
+msgid "Product"
+msgstr "Product"
+
+#: admin/dashboard.php:24
+msgid "User"
+msgstr "User"
+
+#: admin/dashboard.php:25
+msgid "Date"
+msgstr "Date"
+
+#: admin/dashboard.php:34
+msgid "Product not found"
+msgstr "Product not found"
+
+#: admin/dashboard.php:36
+msgid "Guest"
+msgstr "Guest"
+
+#: admin/dashboard.php:45
+msgid "No recent recommendations found."
+msgstr "No recent recommendations found."
+
+#: includes/admin.php:11
+msgid "Advanced Woo Recommendations requires WooCommerce to be installed and active."
+msgstr "Advanced Woo Recommendations requires WooCommerce to be installed and active."
+
+#: includes/admin.php:20
+msgid "Woo Recommendations"
+msgstr "Woo Recommendations"
+
+#: admin/dashboard.php:101
+msgid "AWR Dashboard"
+msgstr "AWR Dashboard"
