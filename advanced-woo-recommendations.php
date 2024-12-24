@@ -5,7 +5,7 @@ namespace AdvancedWooRecommendations;
  * Plugin Name: Advanced Woo Recommendations
  * Plugin URI: https://designolabs.com
  * Description: A highly advanced WooCommerce recommendation engine for personalized product suggestions.
- * Version: 1.0
+ * Version: 1.0.0
  * Author: Designolabs Studio
  * Author URI: https://designolabs.com
  * License: GPL-2.0+
@@ -19,69 +19,117 @@ namespace AdvancedWooRecommendations;
 
 // Prevent direct access
 if (!defined('ABSPATH')) {
-    exit; // Exit if accessed directly
+    exit;
 }
 
-// Define plugin paths
+// Define constants for plugin version and directory
+define('AWR_VERSION', '1.0.0');
 define('AWR_PLUGIN_DIR', plugin_dir_path(__FILE__));
-define('AWR_PLUGIN_URL', plugin_dir_url(__FILE__));
 
-// Include required files
-require_once AWR_PLUGIN_DIR . 'includes/admin.php';
-require_once AWR_PLUGIN_DIR . 'includes/api.php';
-require_once AWR_PLUGIN_DIR . 'includes/frontend.php';
+// Autoload necessary classes (can be improved using Composer's autoloader)
+spl_autoload_register(function ($class) {
+    if (strpos($class, 'AdvancedWooRecommendations') === 0) {
+        $file = AWR_PLUGIN_DIR . 'includes/' . strtolower(str_replace('\\', DIRECTORY_SEPARATOR, $class)) . '.php';
+        if (file_exists($file)) {
+            require_once $file;
+        }
+    }
+});
 
-// Enqueue scripts and styles
-function awr_enqueue_assets() {
-    wp_enqueue_style('awr-styles', AWR_PLUGIN_URL . 'assets/css/style.css');
-    wp_enqueue_script('awr-scripts', AWR_PLUGIN_URL . 'assets/js/script.js', array('jquery'), '1.0', true);
-}
-add_action('wp_enqueue_scripts', 'awr_enqueue_assets');
+// Main Plugin Class
+class Plugin {
 
-// Shortcode for product recommendations
-function awr_display_recommendations() {
-    ob_start();
-    include AWR_PLUGIN_DIR . 'templates/recommendations.php';
-    return ob_get_clean();
-}
-add_shortcode('product_recommendations', 'awr_display_recommendations');
+    // Initialize the plugin
+    public function __construct() {
+        // Check WooCommerce dependency
+        if (!$this->check_woocommerce()) {
+            add_action('admin_notices', [$this, 'woocommerce_notice']);
+            return;
+        }
 
+        // Load necessary files
+        $this->load_dependencies();
 
-function awr_enqueue_react_assets() {
-    // Enqueue React and React DOM from WordPress core
-    wp_enqueue_script('react', 'https://unpkg.com/react@17/umd/react.production.min.js', array(), '17.0.0', true);
-    wp_enqueue_script('react-dom', 'https://unpkg.com/react-dom@17/umd/react-dom.production.min.js', array('react'), '17.0.0', true);
+        // Register hooks
+        $this->register_hooks();
+    }
 
-    // Enqueue our custom React component
-    wp_enqueue_script(
-        'awr-react-app',
-        AWR_PLUGIN_URL . 'assets/js/react-app.js',
-        array('react', 'react-dom', 'wp-element'),
-        '1.0',
-        true
-    );
+    // Check if WooCommerce is active
+    public function check_woocommerce() {
+        return class_exists('WooCommerce');
+    }
 
-    // Localize script to pass necessary data (e.g., API endpoints)
-    wp_localize_script('awr-react-app', 'awr_data', array(
-        'apiEndpoint' => rest_url('awr/v1/recommendations'),
-        'userId' => get_current_user_id() ? get_current_user_id() : 'guest_' . session_id(),
-    ));
-}
-add_action('wp_enqueue_scripts', 'awr_enqueue_react_assets');
+    // WooCommerce dependency notice
+    public function woocommerce_notice() {
+        ?>
+        <div class="notice notice-error">
+            <p><?php _e('Advanced Woo Recommendations requires WooCommerce to be installed and active.', 'advanced-woo-recommendations'); ?></p>
+        </div>
+        <?php
+    }
 
-function awr_enqueue_admin_scripts() {
-    wp_enqueue_style('wp-color-picker');
-    wp_enqueue_script('awr-admin-script', AWR_PLUGIN_URL . 'assets/js/admin.js', array('wp-color-picker'), false, true);
-}
-add_action('admin_enqueue_scripts', 'awr_enqueue_admin_scripts');
+    // Load plugin dependencies
+    public function load_dependencies() {
+        require_once AWR_PLUGIN_DIR . 'includes/admin.php';
+        require_once AWR_PLUGIN_DIR . 'includes/api.php';
+        require_once AWR_PLUGIN_DIR . 'includes/cart-recommendations.php';
+        require_once AWR_PLUGIN_DIR . 'includes/email.php';
+        require_once AWR_PLUGIN_DIR . 'includes/frontend.php';
+        require_once AWR_PLUGIN_DIR . 'admin/dashboard.php';
+        require_once AWR_PLUGIN_DIR . 'admin/settings.php';
+    }
 
+    // Register hooks and actions
+    public function register_hooks() {
+        // Admin settings page
+        add_action('admin_menu', [__CLASS__, 'create_settings_page']);
+        
+        // Settings and scripts
+        add_action('admin_init', __NAMESPACE__ . '\\Settings::register_settings');
+        add_action('admin_enqueue_scripts', __NAMESPACE__ . '\\Settings::enqueue_color_picker');
+        
+        // Plugin update
+        add_action('init', [$this, 'plugin_updater']);
+    }
 
-function awr_enqueue_color_picker($hook_suffix) {
-    // Check if we're on the plugin settings page
-    if ($hook_suffix === 'settings_page_awr-settings-page') {
-        wp_enqueue_style('wp-color-picker');
-        wp_enqueue_script('awr-admin-scripts', AWR_PLUGIN_URL . 'assets/js/admin-script.js', array('wp-color-picker'), false, true);
+    // Create settings page
+    public static function create_settings_page() {
+        add_menu_page(
+            __('Advanced Woo Recommendations', 'advanced-woo-recommendations'),
+            __('Woo Recommendations', 'advanced-woo-recommendations'),
+            'manage_options',
+            'awr-settings',
+            __NAMESPACE__ . '\\Settings::render_settings_page',
+            'dashicons-admin-generic',
+            80
+        );
+    }
+
+    // Plugin updater from GitHub
+    public function plugin_updater() {
+        $repo_owner = 'rizennews';
+        $repo_name = 'advanced-woo-recommendations';
+        $github_url = "https://github.com/{$repo_owner}/{$repo_name}";
+
+        $config = array(
+            'slug' => plugin_basename(__FILE__),
+            'proper_folder_name' => 'advanced-woo-recommendations',
+            'api_url' => 'https://api.github.com/repos/' . $repo_owner . '/' . $repo_name . '/releases/latest',
+            'raw_url' => 'https://raw.githubusercontent.com/' . $repo_owner . '/' . $repo_name . '/master',
+            'github_url' => $github_url,
+            'zip_url' => 'https://github.com/' . $repo_owner . '/' . $repo_name . '/zipball/master',
+            'sslverify' => true,
+            'requires' => '5.6',
+            'tested' => '8.0',
+            'readme' => 'README.md',
+            'access_token' => '',
+        );
+
+        if (class_exists('\Designolabs\PluginUpdater')) {
+            new \Designolabs\PluginUpdater($config);
+        }
     }
 }
-add_action('admin_enqueue_scripts', 'awr_enqueue_color_picker');
 
+// Initialize the plugin
+new Plugin();

@@ -1,4 +1,5 @@
 <?php
+namespace AdvancedWooRecommendations;
 // Ensure WordPress is loaded
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
@@ -26,23 +27,9 @@ function awr_render_settings_page() {
 
 // Register and define plugin settings
 function awr_register_settings() {
-    register_setting(
-        'awr_settings_group',
-        'awr_recombee_api_key',
-        [
-            'sanitize_callback' => 'awr_validate_recombee_api_key',
-            'default' => ''
-        ]
-    );
-    register_setting(
-        'awr_settings_group',
-        'awr_gemini_api_key',
-        [
-            'sanitize_callback' => 'awr_validate_gemini_api_key',
-            'default' => ''
-        ]
-    );
-
+    // Register settings with validation callbacks
+    awr_register_api_setting('awr_recombee_api_key', 'awr_validate_recombee_api_key');
+    awr_register_api_setting('awr_gemini_api_key', 'awr_validate_gemini_api_key');
 
     // Add settings section
     add_settings_section(
@@ -52,147 +39,117 @@ function awr_register_settings() {
         'awr-settings-page'
     );
 
-    // Recombee API key setting
-    add_settings_field(
-        'awr_recombee_api_key',
-        __('Recombee API Key', 'advanced-woo-recommendations'),
-        'awr_recombee_api_key_callback',
-        'awr-settings-page',
-        'awr_main_settings_section'
+    // Add individual settings fields
+    awr_add_settings_field('awr_recombee_api_key', __('Recombee API Key', 'advanced-woo-recommendations'), 'awr_recombee_api_key_callback');
+    awr_add_settings_field('awr_gemini_api_key', __('Gemini API Key', 'advanced-woo-recommendations'), 'awr_gemini_api_key_callback');
+}
+add_action('admin_init', 'awr_register_settings');
+
+// Helper function to register settings
+function awr_register_api_setting($option_name, $sanitize_callback) {
+    register_setting(
+        'awr_settings_group',
+        $option_name,
+        [
+            'sanitize_callback' => $sanitize_callback,
+            'default' => ''
+        ]
     );
-    // Gemini API key setting
+}
+
+// Helper function to add settings field
+function awr_add_settings_field($id, $title, $callback) {
     add_settings_field(
-        'awr_gemini_api_key',
-        __('Gemini API Key', 'advanced-woo-recommendations'),
-        'awr_gemini_api_key_callback',
+        $id,
+        $title,
+        $callback,
         'awr-settings-page',
         'awr_main_settings_section'
     );
 }
-add_action('admin_init', 'awr_register_settings');
 
 // Callback for section description
 function awr_main_settings_section_callback() {
     echo __('Enter your API keys and manage plugin settings.', 'advanced-woo-recommendations');
 }
 
+// Generic API key input callback
+function awr_api_key_input_callback($option_name, $description) {
+    $api_key = get_option($option_name);
+    ?>
+    <input
+        type="text"
+        name="<?php echo esc_attr($option_name); ?>"
+        id="<?php echo esc_attr($option_name); ?>"
+        value="<?php echo esc_attr($api_key); ?>"
+        class="regular-text"
+    />
+    <p class="description">
+        <?php echo esc_html($description); ?>
+    </p>
+    <?php
+}
+
 // Callback for Recombee API key field
 function awr_recombee_api_key_callback() {
-    $api_key = get_option('awr_recombee_api_key');
-    ?>
-    <input
-        type="text"
-        name="awr_recombee_api_key"
-        id="awr_recombee_api_key"
-        value="<?php echo esc_attr($api_key); ?>"
-        class="regular-text"
-    />
-    <p class="description">
-        <?php _e('Enter your Recombee API key. You can find this in your Recombee dashboard.', 'advanced-woo-recommendations'); ?>
-    </p>
-    <?php
+    awr_api_key_input_callback('awr_recombee_api_key', __('Enter your Recombee API key. You can find this in your Recombee dashboard.', 'advanced-woo-recommendations'));
 }
+
 // Callback for Gemini API key field
 function awr_gemini_api_key_callback() {
-    $api_key = get_option('awr_gemini_api_key');
-    ?>
-    <input
-        type="text"
-        name="awr_gemini_api_key"
-        id="awr_gemini_api_key"
-        value="<?php echo esc_attr($api_key); ?>"
-        class="regular-text"
-    />
-    <p class="description">
-        <?php _e('Enter your Gemini API key. You can find this in your Google AI Studio.', 'advanced-woo-recommendations'); ?>
-    </p>
-    <?php
+    awr_api_key_input_callback('awr_gemini_api_key', __('Enter your Gemini API key. You can find this in your Google AI Studio.', 'advanced-woo-recommendations'));
 }
 
-// Validate Recombee API key before saving
+// Validate API keys
+function awr_validate_api_key($input, $option_name, $test_callback, $api_name) {
+    $api_key = sanitize_text_field($input);
+
+    if (empty($api_key)) {
+        add_settings_error(
+            $option_name,
+            'empty_api_key',
+            sprintf(__('%s API key cannot be empty.', 'advanced-woo-recommendations'), $api_name),
+            'error'
+        );
+        return get_option($option_name); // Return existing value
+    }
+
+    if (!preg_match('/^[a-zA-Z0-9\-\_]{20,}$/', $api_key)) {
+        add_settings_error(
+            $option_name,
+            'invalid_api_key',
+            sprintf(__('Invalid %s API key format. Please enter a valid API key.', 'advanced-woo-recommendations'), $api_name),
+            'error'
+        );
+        return get_option($option_name);
+    }
+
+    // Test API connection
+    $test_result = $test_callback($api_key);
+    if (is_wp_error($test_result)) {
+        add_settings_error(
+            $option_name,
+            'api_connection_failed',
+            sprintf(
+                __('Failed to connect to %s API: %s', 'advanced-woo-recommendations'),
+                $api_name,
+                $test_result->get_error_message()
+            ),
+            'error'
+        );
+        return get_option($option_name);
+    }
+
+    return $api_key;
+}
+
+// Specific API key validation
 function awr_validate_recombee_api_key($input) {
-    $api_key = sanitize_text_field($input);
-
-    if (empty($api_key)) {
-        add_settings_error(
-            'awr_recombee_api_key',
-            'empty_api_key',
-            __('Recombee API key cannot be empty.', 'advanced-woo-recommendations'),
-            'error'
-        );
-        return get_option('awr_recombee_api_key'); // Return existing value
-    }
-
-    // Basic format validation
-    if (!preg_match('/^[a-zA-Z0-9\-\_]{20,}$/', $api_key)) {
-        add_settings_error(
-            'awr_recombee_api_key',
-            'invalid_api_key',
-            __('Invalid Recombee API key format. Please enter a valid Recombee API key.', 'advanced-woo-recommendations'),
-            'error'
-        );
-        return get_option('awr_recombee_api_key');
-    }
-
-    // Test API connection
-    $test_result = awr_test_recombee_api_connection($api_key);
-    if (is_wp_error($test_result)) {
-        add_settings_error(
-            'awr_recombee_api_key',
-            'api_connection_failed',
-            sprintf(
-                __('Failed to connect to Recombee API: %s', 'advanced-woo-recommendations'),
-                $test_result->get_error_message()
-            ),
-            'error'
-        );
-        return get_option('awr_recombee_api_key');
-    }
-
-    return $api_key;
+    return awr_validate_api_key($input, 'awr_recombee_api_key', 'awr_test_recombee_api_connection', 'Recombee');
 }
-// Validate Gemini API key before saving
+
 function awr_validate_gemini_api_key($input) {
-    $api_key = sanitize_text_field($input);
-
-    if (empty($api_key)) {
-        add_settings_error(
-            'awr_gemini_api_key',
-            'empty_api_key',
-            __('Gemini API key cannot be empty.', 'advanced-woo-recommendations'),
-            'error'
-        );
-        return get_option('awr_gemini_api_key'); // Return existing value
-    }
-
-    // Basic format validation
-    if (!preg_match('/^[a-zA-Z0-9\-\_]{20,}$/', $api_key)) {
-         add_settings_error(
-            'awr_gemini_api_key',
-            'invalid_api_key',
-            __('Invalid Gemini API key format. Please enter a valid Gemini API key.', 'advanced-woo-recommendations'),
-            'error'
-        );
-        return get_option('awr_gemini_api_key');
-    }
-
-
-    // Test API connection
-    $test_result = awr_test_gemini_api_connection($api_key);
-    if (is_wp_error($test_result)) {
-        add_settings_error(
-            'awr_gemini_api_key',
-            'api_connection_failed',
-            sprintf(
-                __('Failed to connect to Gemini API: %s', 'advanced-woo-recommendations'),
-                $test_result->get_error_message()
-            ),
-            'error'
-        );
-        return get_option('awr_gemini_api_key');
-    }
-
-    return $api_key;
+    return awr_validate_api_key($input, 'awr_gemini_api_key', 'awr_test_gemini_api_connection', 'Gemini');
 }
 
 // Test Recombee API connection
@@ -205,20 +162,9 @@ function awr_test_recombee_api_connection($api_key) {
         ],
     ]);
 
-    if (is_wp_error($response)) {
-        return $response; // Return the WP_Error object
-    }
-
-    $status_code = wp_remote_retrieve_response_code($response);
-    if ($status_code !== 200) {
-        return new WP_Error(
-            'api_connection_failed',
-            __('Failed to connect to Recombee API. Please check your API key and try again.', 'advanced-woo-recommendations')
-        );
-    }
-
-    return true; // Connection successful
+    return awr_handle_api_response($response, 'Recombee');
 }
+
 // Test Gemini API connection
 function awr_test_gemini_api_connection($api_key) {
     $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent'; // Replace with actual test endpoint
@@ -226,33 +172,27 @@ function awr_test_gemini_api_connection($api_key) {
     $response = wp_remote_post($url, [
         'headers' => [
             'Content-Type' => 'application/json',
-             'x-goog-api-key' => $api_key,
+            'x-goog-api-key' => $api_key,
         ],
-         'body' => json_encode([
-            'contents' => [
-                [
-                    'parts' => [
-                        [
-                            'text' => 'test'
-                        ]
-                    ]
-                ]
-            ]
-        ])
+        'body' => json_encode(['contents' => [['parts' => [['text' => 'test']]]]])
     ]);
 
+    return awr_handle_api_response($response, 'Gemini');
+}
 
+// Generic function to handle API responses
+function awr_handle_api_response($response, $api_name) {
     if (is_wp_error($response)) {
-        return $response; // Return the WP_Error object
+        return $response;
     }
 
     $status_code = wp_remote_retrieve_response_code($response);
     if ($status_code !== 200) {
         return new WP_Error(
             'api_connection_failed',
-            __('Failed to connect to Gemini API. Please check your API key and try again.', 'advanced-woo-recommendations')
+            sprintf(__('Failed to connect to %s API. Please check your API key and try again.', 'advanced-woo-recommendations'), $api_name)
         );
     }
 
-    return true; // Connection successful
+    return true;
 }
