@@ -1,0 +1,20 @@
+msgid "Save Settings"
+msgstr "Guardar Configuración"
+
+msgid "Enable Recommendations"
+msgstr "Habilitar Recomendaciones"
+
+msgid "Recommended Products"
+msgstr "Productos Recomendados"
+
+msgid "View More"
+msgstr "Ver Más"
+
+msgid "You might also like"
+msgstr "También te puede interesar"
+
+msgid "Product Recommendations"
+msgstr "Recomendaciones de Productos"
+
+msgid "Add to Cart"
+msgstr "Añadir al carrito"

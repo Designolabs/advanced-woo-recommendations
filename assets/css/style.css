@@ -1,65 +1,91 @@
+:root {
+    --awr-primary-color: #0071a1;
+    --awr-secondary-color: #f1f1f1;
+    --awr-error-color: #d63638;
+    --awr-success-color: #46b450;
+    --awr-warning-color: #ffb900;
+    --awr-border-color: #eee;
+    --awr-text-color: #333;
+    --awr-price-color: #e03;
+    --awr-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    --awr-transition: all 0.2s ease;
+    --awr-border-radius: 4px;
+}
+
+.awr-recommendations {
+    margin: 2rem 0;
+}
+
 .awr-recommendations-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
-    margin-top: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
+    padding: 1rem;
+}
+
+/* Loading Spinner */
+.awr-loading-spinner {
+    text-align: center;
+    padding: 2rem;
 }
 
 .awr-product {
     border: 1px solid #ccc;
-    padding: 15px; /* Increased padding for better spacing */
+    padding: 10px;
     text-align: center;
     background-color: #fff;
     transition: all 0.3s ease;
-    border-radius: 8px; /* Added border-radius for a softer look */
 }
 
 .awr-product:hover {
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
-    transform: translateY(-2px); /* Slight lift on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .awr-product img {
     max-width: 100%;
     height: auto;
-    border-radius: 4px; /* Rounded corners for images */
 }
 
-.awr-price {
-    color: #0071a1;
-    font-weight: bold;
-    margin-top: 10px;
+.awr-product-image img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--awr-transition);
+}
+
+.awr-product-image img:hover {
+    transform: scale(1.05);
 }
 
 :root {
     --awr-primary-color: #0071a1;
     --awr-secondary-color: #f1f1f1;
     --awr-font-family: Arial, sans-serif;
-    --awr-text-color: #333; /* Default text color */
 }
 
-.awr-recommendations-grid {
-    font-family: var(--awr-font-family);
+.awr-product-details {
+    padding: 1rem;
 }
 
 .awr-product {
     background-color: var(--awr-secondary-color);
-    color: var(--awr-text-color); /* Apply default text color */
 }
 
 .awr-product a {
     color: var(--awr-primary-color);
-    text-decoration: none; /* Remove underline from links */
-}
-
-.awr-product a:hover {
-    text-decoration: underline; /* Add underline on hover for links */
 }
 
 .awr-price {
     color: var(--awr-primary-color);
 }
 
+
+:root {
+    --awr-font-family: Arial, sans-serif; /* Default font */
+}
 
 /* Apply the selected font to the recommendations grid */
 .awr-recommendations-grid {
@@ -70,59 +96,29 @@
 /* Grid Layout */
 .awr-recommendations-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Adjusted for responsiveness */
-    gap: 25px; /* Increased gap for better spacing */
+    grid-template-columns: repeat(4, 1fr); /* Default: 4 columns */
+    gap: 20px; /* Default: 20px spacing */
 }
 
 /* Carousel Layout */
 .awr-recommendations-carousel .slick-slide {
-    margin: 0 10px;
+    margin: 0 10px; /* Add spacing between carousel slides */
 }
 
 .slick-prev, .slick-next {
-    background-color: var(--awr-primary-color);
+    background-color: #0071a1;
     color: white;
     border-radius: 50%;
     padding: 10px;
-    border: none; /* Remove default border */
-    cursor: pointer; /* Indicate clickable */
-    transition: background-color 0.3s ease; /* Smooth transition */
 }
 
-.slick-prev:hover, .slick-next:hover {
-    background-color: darken(var(--awr-primary-color), 10%); /* Darken on hover */
-}
-
-.slick-dots {
-    text-align: center;
-    margin-top: 15px;
-}
-
-.slick-dots li {
-    display: inline-block;
-    margin: 0 5px;
-}
-
-.slick-dots li button {
-    font-size: 0;
-    line-height: 0;
-    display: block;
-    width: 10px;
-    height: 10px;
-    padding: 5px;
-    cursor: pointer;
-    color: transparent;
-    border: 0;
-    outline: none;
-    background: #ccc;
+.slick-prev, .slick-next {
+    background-color: #0071a1;
+    color: white;
     border-radius: 50%;
-    transition: background-color 0.3s ease;
-}
-
-.slick-dots li.slick-active button {
-    background-color: var(--awr-primary-color);
+    padding: 10px;
 }
 
 .slick-dots li button:before {
-    display: none; /* Hide default dots */
+    color: #0071a1;  /* Change dots color */
 }
