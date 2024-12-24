@@ -85,7 +85,7 @@ If you need support, please visit our [Support Page](#) or reach out via the fol
 
 If you’d like to support the development of this plugin, you can sponsor the project through the following platforms:
 
-- **GitHub Sponsors**: [GitHub Sponsors](https://github.com/sponsors/yourusername)
+- **GitHub Sponsors**: [GitHub Sponsors](https://github.com/sponsors/rizennews)
 - **Patreon**: [padmoreaning](https://www.patreon.com/padmoreaning)
 - **Ko-fi**: [padmoreaning](https://ko-fi.com/padmoreaning)
 - **Open Collective**: [padmore-aning](https://opencollective.com/padmore-aning)
